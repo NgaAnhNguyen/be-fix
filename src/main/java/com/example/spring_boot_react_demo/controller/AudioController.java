@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://be-fix-production.up.railway.app/")
 @RequiredArgsConstructor
 public class AudioController {
     private final FFmpegService ffmpegService;
