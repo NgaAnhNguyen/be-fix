@@ -1,8 +1,9 @@
 package com.example.spring_boot_react_demo.service.impl;
 
+import com.example.spring_boot_react_demo.model.entity.Video;
+import com.example.spring_boot_react_demo.repository.VideoRepo;
 import com.example.spring_boot_react_demo.service.CloudinaryService;
 import com.example.spring_boot_react_demo.service.FFmpegService;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FFmpegServiceImpl implements FFmpegService {
     private final CloudinaryService cloudinaryService;
+    private final VideoRepo videoRepo;
+
     @Override
     public String extractAudio(String videoPath) {
         String audioPath = videoPath.replace(".mp4", ".mp3");
@@ -87,7 +90,7 @@ public class FFmpegServiceImpl implements FFmpegService {
             Process process = processBuilder.start();
             process.waitFor();
 
-                // Trả về đường dẫn tới file đầu ra
+            // Trả về đường dẫn tới file đầu ra
             return "Audio files merged successfully. Output file: " + outputFilePath;
 
         } catch (IOException | InterruptedException e) {
@@ -170,6 +173,9 @@ public class FFmpegServiceImpl implements FFmpegService {
                 tempFile.delete();
             }
             outputFile.delete();
+            Video newVideo = new Video();
+            newVideo.setUrl(cloudinaryUrl);
+            videoRepo.save(newVideo);
             return cloudinaryUrl != null ? cloudinaryUrl : "Error uploading merged file to Cloudinary.";
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
